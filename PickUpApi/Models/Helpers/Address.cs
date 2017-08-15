@@ -5,6 +5,7 @@ namespace PickUpApi.Models.Helpers
     public class Address
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [ForeignKey("Game")]
         public int AddressId { get; set; }
         public string Street { get; set; }
         public string UnitNo { get; set; }

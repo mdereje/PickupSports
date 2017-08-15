@@ -9,56 +9,65 @@ using System.Threading.Tasks;
 namespace PickUpApi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Sports")]
-    public class SportsController : Controller
+    [Route("api/Games")]
+    public class GamesController : Controller
     {
         private readonly PickupContext _context;
 
-        public SportsController(PickupContext context)
+        public GamesController(PickupContext context)
         {
             _context = context;
         }
 
-        // GET: api/Sports
+        // GET: api/Games
         [HttpGet]
-        public IEnumerable<Sport> GetSport()
+        public IEnumerable<Game> GetGames()
         {
-            return _context.Sports.ToList();
+            var games = _context.Games;
+
+            foreach (var g in games)
+            {
+                g.Address = _context.Addresses.SingleOrDefault(a => a.AddressId == g.AddressId);
+                g.Location = _context.Locations.SingleOrDefault(l => l.LocationId == g.LocationId);
+            }
+
+            return games;
         }
 
-        // GET: api/Sports/5
+        // GET: api/Games/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSport([FromRoute] long id)
+        public async Task<IActionResult> GetGame([FromRoute] long id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var sport = await _context.Sports.SingleOrDefaultAsync(m => m.SportId == id);
+            var game = await _context.Games.SingleOrDefaultAsync(m => m.GameId == id);
 
-            if (sport == null)
+            if (game == null)
             {
                 return NotFound();
             }
 
-            return Ok(sport);
+            return Ok(game);
         }
 
-        // PUT: api/Sports/5
+        // PUT: api/Games/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSport([FromRoute] long id, [FromBody] Sport sport)
+        public async Task<IActionResult> PutGame([FromRoute] long id, [FromBody] Game game)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != sport.SportId)
+            if (id != game.GameId)
             {
                 return BadRequest();
             }
-            _context.Entry(sport).State = EntityState.Modified;
+
+            _context.Entry(game).State = EntityState.Modified;
 
             try
             {
@@ -66,7 +75,7 @@ namespace PickUpApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SportExists(id))
+                if (!GameExists(id))
                 {
                     return NotFound();
                 }
@@ -79,45 +88,46 @@ namespace PickUpApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Sports
+        // POST: api/Games
         [HttpPost]
-        public async Task<IActionResult> PostSport([FromBody] Sport sport)
+        public async Task<IActionResult> PostGame([FromBody] Game game)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Sports.Add(sport);
+            _context.Games.Add(game);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSport", new { id = sport.SportId }, sport);
+            return CreatedAtAction("GetGame", new { id = game.GameId }, game);
         }
 
-        // DELETE: api/Sports/5
+        // DELETE: api/Games/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSport([FromRoute] long id)
+        public async Task<IActionResult> DeleteGame([FromRoute] long id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var sport = await _context.Sports.SingleOrDefaultAsync(m => m.SportId == id);
-            if (sport == null)
+            var game = await _context.Games.SingleOrDefaultAsync(m => m.GameId == id);
+            if (game == null)
             {
                 return NotFound();
             }
 
-            _context.Sports.Remove(sport);
+            _context.Games.Remove(game);
             await _context.SaveChangesAsync();
 
-            return Ok(sport);
+            return Ok(game);
         }
 
-        private bool SportExists(long id)
+        private bool GameExists(long id)
         {
-            return _context.Sports.Any(e => e.SportId == id);
+            return _context.Games.Any(e => e.GameId == id);
         }
     }
+
 }

@@ -35,8 +35,9 @@ namespace PickUpApi.Data
             var i = 1;
             A.Configure<Address>().Fill(a => a.AddressId, () => new int());
             A.Configure<Location>().Fill(a => a.LocationId, () => new int())
-                                    .Fill(a => a.Latitude, () => RandomFloat(new Random(i++)))
-                                    .Fill(a => a.Longitude, () => RandomFloat(new Random(i++)));
+                                   .Fill(a => a.Latitude, () => RandomFloat(new Random(i++)))
+                                   .Fill(a => a.Longitude, () => RandomFloat(new Random(i++)));
+
             var addresses = A.ListOf<Address>();
             var locations = A.ListOf<Location>();
 
