@@ -36,7 +36,7 @@ namespace PickUpApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var sport = await _context.Sports.SingleOrDefaultAsync(m => m.Id == id);
+            var sport = await _context.Sports.SingleOrDefaultAsync(m => m.SportId == id);
 
             if (sport == null)
             {
@@ -55,7 +55,7 @@ namespace PickUpApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != sport.Id)
+            if (id != sport.SportId)
             {
                 return BadRequest();
             }
@@ -92,7 +92,7 @@ namespace PickUpApi.Controllers
             _context.Sports.Add(sport);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSport", new { id = sport.Id }, sport);
+            return CreatedAtAction("GetSport", new { id = sport.SportId }, sport);
         }
 
         // DELETE: api/Sports/5
@@ -104,7 +104,7 @@ namespace PickUpApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var sport = await _context.Sports.SingleOrDefaultAsync(m => m.Id == id);
+            var sport = await _context.Sports.SingleOrDefaultAsync(m => m.SportId == id);
             if (sport == null)
             {
                 return NotFound();
@@ -118,7 +118,7 @@ namespace PickUpApi.Controllers
 
         private bool SportExists(long id)
         {
-            return _context.Sports.Any(e => e.Id == id);
+            return _context.Sports.Any(e => e.SportId == id);
         }
     }
 }
