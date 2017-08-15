@@ -6,7 +6,7 @@ namespace PickUpApi.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(SportContext context)
+        public static void Initialize(PickupContext context)
         {
             context.Database.EnsureCreated();
 

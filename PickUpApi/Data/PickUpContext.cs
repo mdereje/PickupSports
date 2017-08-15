@@ -3,9 +3,9 @@ using PickUpApi.Models;
 
 namespace PickUpApi.Data
 {
-    public class SportContext : DbContext
+    public class PickupContext : DbContext
     {
-        public SportContext (DbContextOptions<SportContext> options)
+        public PickupContext (DbContextOptions<PickupContext> options)
             : base(options)
         {
         }
