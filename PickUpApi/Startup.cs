@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PickUpApi.Data;
-using PickUpApi.Models;
 
 namespace PickUpApi
 {

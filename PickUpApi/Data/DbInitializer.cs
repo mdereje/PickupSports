@@ -33,16 +33,17 @@ namespace PickUpApi.Data
             context.SaveChanges();
 
             var i = 1;
-            A.Configure<Address>().Fill(a => a.AddressId, () => new int());
             A.Configure<Location>().Fill(a => a.LocationId, () => new int())
                                    .Fill(a => a.Latitude, () => RandomFloat(new Random(i++)))
                                    .Fill(a => a.Longitude, () => RandomFloat(new Random(i++)));
-
-            var addresses = A.ListOf<Address>();
             var locations = A.ListOf<Location>();
 
+            A.Configure<Address>().Fill(a => a.AddressId, () => new int())
+                                  .Fill(g => g.Location).WithRandom(locations);
+
+            var addresses = A.ListOf<Address>();
+
             A.Configure<Game>().Fill(g => g.Address).WithRandom(addresses)
-                               .Fill(g => g.Location).WithRandom(locations)
                                .Fill(g => g.GameId, () => new long())
                                .Fill(g => g.SportId).WithinRange(1, sportContexts.Length);
 
