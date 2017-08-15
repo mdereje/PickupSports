@@ -32,12 +32,12 @@ namespace PickUpApi
             services.AddDbContext<MvcMovieContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
 
-            services.AddDbContext<SportContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("SportContext")));
+            services.AddDbContext<PickupContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("PickupContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, SportContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, PickupContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();

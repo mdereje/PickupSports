@@ -13,17 +13,12 @@ namespace PickUpApi.Controllers
     [Route("api/Sports")]
     public class SportsController : Controller
     {
-        private readonly SportContext _context;
+        private readonly PickupContext _context;
 
-        public SportsController(SportContext context)
+        public SportsController(PickupContext context)
         {
             _context = context;
         }
-
-       /* public async Task<IActionResult> Index()
-        {
-          //  return await _context.Sports.ToListAsync();
-        }*/
 
         // GET: api/Sports
         [HttpGet]
