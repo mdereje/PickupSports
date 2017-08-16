@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PickUpApi.Models.Helpers
 {
     public class Address
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [HiddenInput(DisplayValue = false)]
         public int AddressId { get; set; }
         public string Street { get; set; }
         public string UnitNo { get; set; }

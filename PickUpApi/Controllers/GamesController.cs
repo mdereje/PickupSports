@@ -23,7 +23,8 @@ namespace PickUpApi.Controllers
         [HttpGet]
         public IEnumerable<Game> GetGames()
         {
-            var games = _context.Games.Include(g => g.Address).ThenInclude(a => a.Location);
+            var games = _context.Games.Include(g => g.Address)
+                                      .ThenInclude(a => a.Location);
 
             return games;
         }
