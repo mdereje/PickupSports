@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GenFu;
+using Microsoft.EntityFrameworkCore;
 using PickUpApi.Models;
 using PickUpApi.Models.Helpers;
 
@@ -51,25 +51,27 @@ namespace PickUpApi.Data
                                  .Fill(p => p.Name).WithRandom(names);
 
             var playerContexts = A.ListOf<Player>(34);
+            ICollection<Player> playerCollection = new Collection<Player>();
 
             foreach (var p in playerContexts)
             {
                 context.Players.Add(p);
+                playerCollection.Add(p);
             }
             context.SaveChanges();
             
-            ICollection<Player> playerCollection = new Collection<Player>();
-            playerCollection.Add(context.Players as Player);
-            //playerCollection.Add(context.Players.ToList().GetRange(10, 18));
-            //playerCollection.Add(context.Players.ToList().GetRange(28, 5));
+            
+            //playerCollection.Add(playerContexts.GetRange(0, 10));
+            //playerCollection.Add(playerContexts.GetRange(10, 18));
+            //playerCollection.Add(playerContexts.GetRange(28, 5));
 
             A.Configure<Game>().Fill(g => g.Address).WithRandom(addresses)
                 .Fill(g => g.GameId, () => new long())
                 .Fill(g => g.Referee).WithRandom(new[] {true, false})
                 .Fill(g => g.FreeToPlayer).WithRandom(new[] {true, false})
                 .Fill(g => g.SportId).WithinRange(1, sportContexts.Length)
-                .Fill(g => g.SkillLevel).WithRandom(new [] {SkillLevel.Advanced, SkillLevel.Elite, SkillLevel.Medium, SkillLevel.OpenToAll, SkillLevel.Recreation})
-                                .Fill(g => g.Players).WithRandom(playerCollection);
+                .Fill(g => g.SkillLevel).WithRandom(new List<SkillLevel>{SkillLevel.Advanced, SkillLevel.Elite, SkillLevel.Medium, SkillLevel.OpenToAll, SkillLevel.Recreation});
+                                //.Fill(g => g.Players).WithRandom(playerCollection);
 
             var gameContexts = A.ListOf<Game>(100);
 
@@ -78,8 +80,17 @@ namespace PickUpApi.Data
                 context.Games.Add(g);
             }
 
+            //get game id's
+            List<long> gameIds = GetGameIds(context);
+
+            var games = context.Games.ToList();
+
+            foreach (var g in games)
+            {
+                context.Entry(g).Property(m => m.Players).CurrentValue = playerCollection;
+            }
+
             context.SaveChanges();
-                        
         }
 
         //https://stackoverflow.com/questions/3365337/best-way-to-generate-a-random-float-in-c-sharp
@@ -89,6 +100,16 @@ namespace PickUpApi.Data
             var mantissa = (random.NextDouble() * 2.0) - 1.0;
             var exponent = Math.Pow(2.0, random.Next(0, 7));
             return (float)(mantissa * exponent);
+        }
+
+        private static List<long> GetGameIds(PickupContext context)
+        {
+            List<long> gameIds = new List<long>();
+            foreach (var g in context.Games)
+            {
+                gameIds.Add(g.GameId);
+            }
+            return gameIds;
         }
     }
 }

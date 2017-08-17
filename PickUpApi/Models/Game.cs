@@ -21,6 +21,6 @@ namespace PickUpApi.Models
         //Current Number of players counting depends on this flag. Only payed count.
         public bool FreeToPlayer { get; set; }
         public SkillLevel SkillLevel { get; set; }
-        public virtual ICollection<Player> Players { get; set; }
+        public virtual ICollection<Player> Players { get; set; } = new HashSet<Player>();
     }
 }

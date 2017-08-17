@@ -5,6 +5,7 @@ using PickUpApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Remotion.Linq.Clauses.ResultOperators;
 
 namespace PickUpApi.Controllers
 {
@@ -23,7 +24,8 @@ namespace PickUpApi.Controllers
         [HttpGet]
         public IEnumerable<Game> GetGames()
         {
-            var games = _context.Games.Include(g => g.Address)
+            var games = _context.Games.Include(g => g.Players)
+                                      .Include(g => g.Address)
                                       .ThenInclude(a => a.Location);
 
             return games;
@@ -38,7 +40,10 @@ namespace PickUpApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var game = await _context.Games.SingleOrDefaultAsync(m => m.GameId == id);
+            var game = await _context.Games.Include(g => g.Players)
+                                           .Include(g => g.Address)
+                                           .ThenInclude(a => a.Location)
+                                           .SingleOrDefaultAsync(m => m.GameId == id);
 
             if (game == null)
             {
