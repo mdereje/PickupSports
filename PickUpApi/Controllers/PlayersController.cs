@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +23,8 @@ namespace PickUpApi.Controllers
         [HttpGet]
         public IEnumerable<Player> GetPlayers()
         {
-            return _context.Players.Include(p => p.Name).Include(p => p.Game);
+            return _context.Players.Include(p => p.Name)
+                                   .Include(p => p.Game);
         }
 
         // GET: api/Players/5
@@ -36,7 +36,9 @@ namespace PickUpApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var player = await _context.Players.Include(p => p.Game).SingleOrDefaultAsync(m => m.PlayerId == id);
+            var player = await _context.Players.Include(p => p.Name)
+                                               .Include(p => p.Game)
+                                               .SingleOrDefaultAsync(m => m.PlayerId == id);
 
             if (player == null)
             {
