@@ -24,7 +24,7 @@ namespace PickUpApi.Controllers
         [HttpGet]
         public IEnumerable<Game> GetGames()
         {
-            var games = _context.Games.Include(g => g.Players)
+            var games = _context.Games.Include(g => g.GamePlayers)
                                       .Include(g => g.Address)
                                       .ThenInclude(a => a.Location);
 
@@ -40,7 +40,7 @@ namespace PickUpApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var game = await _context.Games.Include(g => g.Players)
+            var game = await _context.Games.Include(g => g.GamePlayers)
                                            .Include(g => g.Address)
                                            .ThenInclude(a => a.Location)
                                            .SingleOrDefaultAsync(m => m.GameId == id);

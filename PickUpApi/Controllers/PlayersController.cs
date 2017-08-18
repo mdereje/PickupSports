@@ -24,7 +24,7 @@ namespace PickUpApi.Controllers
         public IEnumerable<Player> GetPlayers()
         {
             return _context.Players.Include(p => p.Name)
-                                   .Include(p => p.Games);
+                                   .Include(p => p.GamePlayers);
         }
 
         // GET: api/Players/5
@@ -37,7 +37,7 @@ namespace PickUpApi.Controllers
             }
 
             var player = await _context.Players.Include(p => p.Name)
-                                               .Include(p => p.Games)
+                                               .Include(p => p.GamePlayers)
                                                .SingleOrDefaultAsync(m => m.PlayerId == id);
 
             if (player == null)

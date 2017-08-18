@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 using PickUpApi.Models.Helpers;
+using PickUpApi.Models.Relationship;
 
 namespace PickUpApi.Models
 {
@@ -13,7 +14,7 @@ namespace PickUpApi.Models
         public long GameId { get; set; }
         //Sports 1 -- Game Many
         public int SportId { get; set; }
-        public virtual Address Address { get; set; }
+        public Address Address { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int MaximumNumberOfPlayers { get; set; }
@@ -22,6 +23,6 @@ namespace PickUpApi.Models
         public bool FreeToPlayer { get; set; }
         public SkillLevel SkillLevel { get; set; }
         public long PlayerId { get; set; }
-        public virtual ICollection<Player> Players { get; set; } = new HashSet<Player>();
+        public virtual List<GamePlayer> GamePlayers { get; set; }
     }
 }

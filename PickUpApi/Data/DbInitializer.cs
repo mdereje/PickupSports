@@ -66,11 +66,11 @@ namespace PickUpApi.Data
                 System.Diagnostics.Debug.WriteLine("Player.GameId = {0}", p.GameId);
             }
 
-            foreach (var p in playerContexts)
-            {
-                context.Players.Add(p);
-            }
-            context.SaveChanges();
+            //foreach (var p in playerContexts)
+            //{
+            //    context.Players.Add(p);
+            //}
+            //context.SaveChanges();
 
             // Create Game
 
@@ -89,6 +89,7 @@ namespace PickUpApi.Data
             };
             A.Configure<Game>().Fill(g => g.Address).WithRandom(addresses)
                 .Fill(g => g.GameId, () => new long())
+                .Fill(g => g.PlayerId, () => new long())
                 .Fill(g => g.Referee).WithRandom(new[] {true, false})
                 .Fill(g => g.FreeToPlayer).WithRandom(new[] {true, false})
                 .Fill(g => g.SportId).WithinRange(1, sportContexts.Count)
@@ -96,6 +97,7 @@ namespace PickUpApi.Data
                                 //.Fill(g => g.Players).WithRandom(playerCollection);
 
             var gameContexts = A.ListOf<Game>(100);
+
 
             foreach (Game g in gameContexts)
             {
@@ -106,8 +108,19 @@ namespace PickUpApi.Data
             {
                 System.Diagnostics.Debug.WriteLine("Game.GameId = {0}", g.GameId);
             }
-            
             context.SaveChanges();
+
+
+            /*  foreach(var g in gameContexts)
+              {
+                  g.Players.Add(playerContexts.First());
+                  context.Add<Game>(g);
+              }
+              context.SaveChanges();
+
+            */
+            //Add GamePlayerRelationship
+
         }
 
         //https://stackoverflow.com/questions/3365337/best-way-to-generate-a-random-float-in-c-sharp
