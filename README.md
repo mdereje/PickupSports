@@ -37,7 +37,7 @@ http://localhost:{PORT}}/api/...
 ```json
 {
   "playerId": 35,		-- Same as {user_id}
-  "gameId": 102,		--
+  "gameId": 102,		-- Null for removing a player, Give GAME ID for adding a player to a game.
   "name": {
     "nameId": 28,
     "firstName": "Queen",

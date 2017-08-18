@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PickUpApi.Models
@@ -12,7 +13,7 @@ namespace PickUpApi.Models
         public Name Name { get; set; }
         public DateTime BirthDate { get; set; }
         public string Email { get; set; }
-       // public ICollection<Game> Games { get; set; }
-        public virtual Game Game { get; set; }
+        public virtual ICollection<Game> Games { get; set; } = new HashSet<Game>();
+       // public virtual Game Game { get; set; }
     }
 }

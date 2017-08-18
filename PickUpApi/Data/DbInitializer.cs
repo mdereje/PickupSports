@@ -21,19 +21,23 @@ namespace PickUpApi.Data
                 return;   // DB has been seeded
             }
 
-            var sportContexts = new Sport[]
-            {
-                new Sport{Name="Soccer",Type="Outdoor",SeasonStartDate= DateTime.Now.Add(new TimeSpan(-20,0,0)), SeasonEndDate =  DateTime.Now.Add(new TimeSpan(20,0,0))},
-                new Sport{Name="Soccer",Type="Indoor",SeasonStartDate= DateTime.Now.Add(new TimeSpan(-40,0,0)), SeasonEndDate =  DateTime.Now.Add(new TimeSpan(70,0,0))},
-                new Sport{Name="Volleyball",Type="Grass",SeasonStartDate= DateTime.Now.Add(new TimeSpan(-50,0,0)), SeasonEndDate =  DateTime.Now.Add(new TimeSpan(1,0,0))},
-                new Sport{Name="Basketball",Type="Indoor",SeasonStartDate= DateTime.Now.Add(new TimeSpan(-10,0,0)), SeasonEndDate =  DateTime.Now.Add(new TimeSpan(50,0,0))}
-            };
+            //Create Sports
+            A.Configure<Sport>()
+                .Fill(x => x.SportId, () => new int())
+                .Fill(x => x.Name).WithRandom(SeedData.SportName)
+                .Fill(x => x.Type).WithRandom(SeedData.SportType)
+                .Fill(x => x.SeasonStartDate).AsPastDate()
+                .Fill(x => x.SeasonEndDate).WithRandom(SeedData.EndDate);
+
+            var sportContexts = A.ListOf<Sport>(10);
+
             foreach (Sport s in sportContexts)
             {
                 context.Sports.Add(s);
             }
             context.SaveChanges();
 
+            // Create location, address, name, player
             var i = 1;
             A.Configure<Location>().Fill(a => a.LocationId, () => new int())
                                    .Fill(a => a.Latitude, () => RandomFloat(new Random(i++)))
@@ -41,36 +45,54 @@ namespace PickUpApi.Data
             var locations = A.ListOf<Location>();
 
             A.Configure<Address>().Fill(a => a.AddressId, () => new int())
+                                  .Fill(a => a.UnitNo).AsAddressLine2()
                                   .Fill(a => a.Location).WithRandom(locations);
             var addresses = A.ListOf<Address>();
 
-            A.Configure<Name>().Fill(n => n.NameId, () => new long());
+            A.Configure<Name>().Fill(n => n.NameId, () => new long())
+                               .Fill(n => n.MiddleName).AsFirstName();
             var names = A.ListOf<Name>();
 
+            //Player
             A.Configure<Player>().Fill(p => p.PlayerId, () => new long())
-                                 .Fill(p => p.Name).WithRandom(names);
+               // .Fill(p => p.GameId).WithRandom(SeedData.ListOfLong(gameContexts.Count))
+                //.Fill(p => p.GameId, () => new long())
+                .Fill(p => p.Name).WithRandom(names);
 
             var playerContexts = A.ListOf<Player>(34);
-            ICollection<Player> playerCollection = new Collection<Player>();
+
+            foreach (var p in playerContexts)
+            {
+                System.Diagnostics.Debug.WriteLine("Player.GameId = {0}", p.GameId);
+            }
 
             foreach (var p in playerContexts)
             {
                 context.Players.Add(p);
-                playerCollection.Add(p);
             }
             context.SaveChanges();
-            
-            
+
+            // Create Game
+
+            ICollection<Player> playerCollection = new Collection<Player>();
             //playerCollection.Add(playerContexts.GetRange(0, 10));
             //playerCollection.Add(playerContexts.GetRange(10, 18));
             //playerCollection.Add(playerContexts.GetRange(28, 5));
 
+            var mockSkillLevel = new List<SkillLevel>
+            {
+                SkillLevel.Advanced,
+                SkillLevel.Elite,
+                SkillLevel.Medium,
+                SkillLevel.OpenToAll,
+                SkillLevel.Recreation
+            };
             A.Configure<Game>().Fill(g => g.Address).WithRandom(addresses)
                 .Fill(g => g.GameId, () => new long())
                 .Fill(g => g.Referee).WithRandom(new[] {true, false})
                 .Fill(g => g.FreeToPlayer).WithRandom(new[] {true, false})
-                .Fill(g => g.SportId).WithinRange(1, sportContexts.Length)
-                .Fill(g => g.SkillLevel).WithRandom(new List<SkillLevel>{SkillLevel.Advanced, SkillLevel.Elite, SkillLevel.Medium, SkillLevel.OpenToAll, SkillLevel.Recreation});
+                .Fill(g => g.SportId).WithinRange(1, sportContexts.Count)
+                .Fill(g => g.SkillLevel).WithRandom(mockSkillLevel);
                                 //.Fill(g => g.Players).WithRandom(playerCollection);
 
             var gameContexts = A.ListOf<Game>(100);
@@ -80,16 +102,11 @@ namespace PickUpApi.Data
                 context.Games.Add(g);
             }
 
-            //get game id's
-            List<long> gameIds = GetGameIds(context);
-
-            var games = context.Games.ToList();
-
-            foreach (var g in games)
+            foreach (var g in gameContexts)
             {
-                context.Entry(g).Property(m => m.Players).CurrentValue = playerCollection;
+                System.Diagnostics.Debug.WriteLine("Game.GameId = {0}", g.GameId);
             }
-
+            
             context.SaveChanges();
         }
 
@@ -104,12 +121,7 @@ namespace PickUpApi.Data
 
         private static List<long> GetGameIds(PickupContext context)
         {
-            List<long> gameIds = new List<long>();
-            foreach (var g in context.Games)
-            {
-                gameIds.Add(g.GameId);
-            }
-            return gameIds;
+            return context.Games.Select(g => g.GameId).ToList();
         }
     }
 }
