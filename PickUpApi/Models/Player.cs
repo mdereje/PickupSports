@@ -9,12 +9,9 @@ namespace PickUpApi.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long PlayerId { get; set; }
-        //[ForeignKey("Game")]
-        public long? GameId { get; set; }
         public Name Name { get; set; }
         public DateTime BirthDate { get; set; }
         public string Email { get; set; }
         public List<GamePlayer> GamePlayers { get; set; }
-       // public virtual Game Game { get; set; }
     }
 }

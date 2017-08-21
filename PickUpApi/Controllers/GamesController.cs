@@ -5,7 +5,6 @@ using PickUpApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Remotion.Linq.Clauses.ResultOperators;
 
 namespace PickUpApi.Controllers
 {
@@ -41,6 +40,7 @@ namespace PickUpApi.Controllers
             }
 
             var game = await _context.Games.Include(g => g.GamePlayers)
+                                           .ThenInclude(gp => gp.Player)
                                            .Include(g => g.Address)
                                            .ThenInclude(a => a.Location)
                                            .SingleOrDefaultAsync(m => m.GameId == id);
