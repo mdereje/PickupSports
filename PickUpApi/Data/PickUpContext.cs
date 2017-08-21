@@ -29,7 +29,7 @@ namespace PickUpApi.Data
 
             //modelBuilder.Entity<Player>().ToTable("Player").HasKey(p => p.PlayerId);
            // modelBuilder.Entity<Game>().ToTable("Game").HasKey(g => g.GameId);
-            modelBuilder.Entity<GamePlayer>().HasKey(gp => new {gp.GameId, gp.PlayerId});
+            modelBuilder.Entity<GamePlayer>().HasKey(gp => new { gp.GameId, gp.PlayerId });
 
             modelBuilder.Entity<GamePlayer>().HasOne(gp => gp.Game)
                                              .WithMany(g => g.GamePlayers)
