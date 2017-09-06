@@ -15,6 +15,9 @@ namespace PickUpApi.Data
             //TODO: Remove
             //context.Database.EnsureDeleted();
 
+            //local: Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;
+            //remote: Server=(localdb)\\mssqllocaldb;Database=PickUpContext-47122b9c-2928-46dd-82ba-325caa015420;Trusted_Connection=True;MultipleActiveResultSets=true"
+        
             context.Database.EnsureCreated();
             // Look for any sports.
             if (context.Sports.Any())
